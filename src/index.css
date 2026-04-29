@@ -1,0 +1,725 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Rajdhani:wght@500;600;700&display=swap');
+
+:root {
+  --bg-main: #F4F7FB;
+  --bg-secondary: #E2E8F0;
+  --highlight: #0EA5E9;
+  --accent-light: #38BDF8;
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.8);
+  --glass-highlight: rgba(255, 255, 255, 0.9);
+  --text-main: #0F172A;
+  --text-dim: #64748B;
+  --card-radius: 20px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100vh;
+  margin: 0;
+  background: var(--bg-main);
+  background-image: radial-gradient(circle at 50% 50%, var(--bg-secondary) 0%, var(--bg-main) 100%);
+  color: var(--text-main);
+  font-family: 'Inter', system-ui, sans-serif;
+  overflow-y: auto;
+  font-weight: 600;
+}
+
+/* 数字化背景装饰 */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(rgba(14, 165, 233, 0.15) 0.5px, transparent 0.5px),
+    linear-gradient(rgba(14, 165, 233, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px, 100% 50px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.dashboard-root {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+/* 简洁专业头部 */
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--glass-border);
+  padding-bottom: 0.5rem;
+}
+
+.main-header h1 {
+  margin: 0;
+  font-size: 1.85rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #0F172A 20%, var(--highlight) 50%, var(--accent-light) 80%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  filter: drop-shadow(0 0 10px rgba(14, 165, 233, 0.3));
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.title-v {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.9rem;
+  background: rgba(14, 165, 233, 0.1);
+  -webkit-text-fill-color: var(--highlight);
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  border: 1px solid var(--highlight);
+  letter-spacing: 0.05em;
+  vertical-align: middle;
+  box-shadow: 0 0 10px rgba(14, 165, 233, 0.1);
+  animation: pulse-glow 2s infinite ease-in-out;
+}
+
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    opacity: 0.8;
+    box-shadow: 0 0 5px var(--highlight);
+  }
+
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 15px var(--highlight);
+  }
+}
+
+.timer {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--highlight);
+  background: rgba(14, 165, 233, 0.05);
+  padding: 0.35rem 1rem;
+  border-radius: 2px;
+  border: 1px solid rgba(14, 165, 233, 0.2);
+}
+
+/* 核心指标卡 */
+.metrics-row {
+  display: grid;
+  grid-template-columns: 20% 1fr 32%;
+  gap: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.metric {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  padding: 1.25rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  border-radius: var(--card-radius);
+  box-shadow: 0 8px 32px 0 rgba(14, 165, 233, 0.08);
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.metric:hover {
+  border-color: rgba(14, 165, 233, 0.5);
+  box-shadow: 0 12px 40px 0 rgba(14, 165, 233, 0.15);
+  transform: translateY(-2px);
+}
+
+.metric::before {
+  display: none;
+}
+
+.metric label {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+.metric .val {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: var(--text-main);
+  text-shadow: 0 0 20px rgba(14, 165, 233, 0.2);
+  letter-spacing: 0.05em;
+}
+
+.floating-delta {
+  position: absolute;
+  left: 100%;
+  padding-left: 10px;
+  bottom: 0;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #10B981;
+  text-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+  pointer-events: none;
+  animation: floatUpFade 1s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+  white-space: nowrap;
+}
+
+.floating-delta.down {
+  color: #FF4D4D;
+  text-shadow: 0 0 15px rgba(255, 77, 77, 0.6);
+  animation: floatDownFade 1s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+
+@keyframes floatUpFade {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.8);
+  }
+
+  20% {
+    opacity: 1;
+    transform: translateY(-5px) scale(1.1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.9);
+  }
+}
+
+@keyframes floatDownFade {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.8);
+  }
+
+  20% {
+    opacity: 1;
+    transform: translateY(5px) scale(1.1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.9);
+  }
+}
+
+.metric .trend,
+.metric .hint {
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  font-weight: 600;
+}
+
+.trend.up {
+  color: #10B981;
+}
+
+.trend.down {
+  color: #EF4444;
+}
+
+/* 内容布局 (20/44/32) */
+.content-layout {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 20% 1fr 32%;
+  gap: 1.25rem;
+  min-height: 0;
+}
+
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid var(--glass-border);
+  border-top: 1px solid var(--glass-highlight);
+  border-left: 1px solid var(--glass-highlight);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-radius: var(--card-radius);
+  box-shadow: 0 8px 32px 0 rgba(14, 165, 233, 0.08);
+}
+
+.glass-card label {
+  height: 24px;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex: none;
+}
+
+.box-header {
+  height: 24px;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: none;
+}
+
+.box-header label {
+  margin-bottom: 0;
+  width: auto;
+}
+
+.platforms-side,
+.rankings-side,
+.center-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 0;
+  height: 100%;
+}
+
+/* 强一致性行对齐类 (Pixel-Perfect Alignment) */
+.row-top {
+  height: 420px !important;
+  flex: none !important;
+}
+
+.row-bottom {
+  height: 480px !important;
+  flex: none !important;
+  min-height: 0;
+}
+
+.ranking-row-inner {
+  display: flex;
+  gap: 1rem;
+  flex: 1;
+  min-height: 0;
+}
+
+.ranking-row>.ranking-card {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 交互列表 */
+.pill-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+}
+
+.pill-container button span:first-child {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-right: 0.5rem;
+}
+
+.pill-container button .amount {
+  flex: none;
+}
+
+.pill-container button {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(14, 165, 233, 0.1);
+  color: var(--text-dim);
+  padding: 0.6rem 1rem;
+  border-radius: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.8rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.pill-container button:hover {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(14, 165, 233, 0.3);
+  transform: translateX(4px);
+}
+
+.pill-container .amount {
+  color: var(--highlight);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.pill-container button.active {
+  background: rgba(14, 165, 233, 0.15);
+  border-color: var(--highlight);
+  color: var(--text-main);
+  box-shadow: inset 0 0 10px rgba(14, 165, 233, 0.2);
+}
+
+.ranking-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.ranking-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.7rem;
+}
+
+.ranking-rank {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(14, 165, 233, 0.15);
+  border-radius: 2px;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 800;
+  font-size: 0.75rem;
+  color: var(--text-main);
+}
+
+.ranking-rank.rank-1 {
+  background: #FFCE56 !important;
+  color: #0b1a2a !important;
+}
+
+.ranking-rank.rank-2 {
+  background: #7AF0FF !important;
+  color: #0b1a2a !important;
+}
+
+.ranking-rank.rank-3 {
+  background: #94a3b8 !important;
+  color: #0b1a2a !important;
+}
+
+.rank-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+
+.rank-val {
+  color: var(--highlight);
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 800;
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.orders-table th {
+  padding: 0.6rem 0.4rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid rgba(14, 165, 233, 0.2);
+}
+
+.orders-table td {
+  padding: 0.5rem 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border-bottom: 1px solid rgba(14, 165, 233, 0.05);
+}
+
+.amount-cell {
+  color: var(--highlight);
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.03em;
+}
+
+.nick-cell {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.orders-table .time-cell,
+.orders-table .no-cell {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+}
+
+.scroll-area-v {
+  flex: 1;
+  overflow-y: auto;
+}
+
+::-webkit-scrollbar {
+  width: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--highlight);
+  opacity: 0.5;
+}
+
+/* 动效 */
+.zenith-scanline {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(rgba(11, 26, 42, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
+  z-index: 10;
+  background-size: 100% 4px;
+  pointer-events: none;
+  opacity: 0.05;
+}
+
+.ambience-glow {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  filter: blur(100px);
+  border-radius: 50%;
+  z-index: -1;
+  opacity: 0.15;
+}
+
+.ambience-glow.g1 {
+  background: var(--highlight);
+  top: -10%
+}
+
+.ambience-glow.g2 {
+  background: var(--accent-light);
+  bottom: -10%
+}
+
+/* 时间切换按钮样式 */
+.tabs {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.tabs button {
+  background: rgba(14, 165, 233, 0.05);
+  border: 1px solid rgba(14, 165, 233, 0.15);
+  color: var(--text-dim);
+  padding: 2px 10px;
+  font-size: 0.7rem;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: .3s;
+  font-weight: 600;
+}
+
+.tabs button:hover {
+  border-color: rgba(14, 165, 233, 0.4);
+  background: rgba(14, 165, 233, 0.1);
+}
+
+.tabs button.active {
+  background: rgba(14, 165, 233, 0.15);
+  border-color: var(--highlight);
+  color: var(--text-main);
+  box-shadow: 0 0 12px rgba(14, 165, 233, 0.2);
+}
+
+/* 极光引导系统 (Aurora Boot) */
+.startup-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: radial-gradient(circle at center, #E2E8F0 30%, #F8FAFC 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(25px);
+  color: var(--text-main);
+}
+
+.loader-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin-bottom: 2rem;
+}
+
+.orbit {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: var(--highlight);
+  animation: orbit-spin 1.5s linear infinite;
+}
+
+.orbit.o2 {
+  inset: 15px;
+  border-top-color: transparent;
+  border-bottom-color: var(--accent-light);
+  animation-direction: reverse;
+  animation-duration: 1s;
+}
+
+.loader-logo {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: var(--highlight);
+  text-shadow: 0 0 10px var(--highlight);
+}
+
+.startup-text {
+  font-family: 'Rajdhani', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.startup-text span {
+  font-weight: 700;
+  color: var(--text-main);
+  font-size: 1.1rem;
+}
+
+@keyframes orbit-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  width: 80%;
+  max-width: 900px;
+  height: 60vh;
+  min-height: 400px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid var(--highlight);
+  border-radius: var(--card-radius);
+  box-shadow: 0 0 30px rgba(14, 165, 233, 0.15);
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  position: relative;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(14, 165, 233, 0.2);
+  padding-bottom: 0.5rem;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.modal-header h2 .highlight-text {
+  color: var(--highlight);
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+}
+
+.modal-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.2rem;
+  transition: all 0.2s;
+  border-radius: 50%;
+}
+
+.modal-close-btn:hover {
+  color: var(--highlight);
+  background: rgba(14, 165, 233, 0.1);
+}
+
+.modal-body {
+  flex: 1;
+  position: relative;
+  min-height: 0;
+}
+
+.modal-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: var(--highlight);
+  background: rgba(255, 255, 255, 0.5);
+  z-index: 10;
+}
